@@ -1,0 +1,13 @@
+[package]
+name = "rpn_lib"
+version = "0.1.4"
+authors = ["takeweb"]
+description = "RPN(Reverse Polish Natation) library"
+license = "MIT"
+edition = "2021"
+include = ["src/", "README.md"]
+homepage = "https://github.com/takeweb/rpn_lib/README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
