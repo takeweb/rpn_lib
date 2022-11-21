@@ -15,31 +15,10 @@ pub fn eval(src: String) -> Result<f64, String> {
     let mut stack: Vec<f64> = vec![];
 
     // 式を空白で分割して繰り返し計算
-    let tokens = src.split_whitespace();
-    for token in tokens {
-        let t = token.trim();
-        if t == "" { continue; }
-
-        // 数値の場合は、スタックにPUSH
-        match t.parse::<f64>() {
-            Ok(v) => {
-                stack.push(v); 
-                continue;
-            },
-            Err(_) => 0.0,
-        };
-
-        // 演算子なら直前2つをPOPして、計算結果をPUSH
-        let b = stack.pop().unwrap();
-        let a = stack.pop().unwrap();
-        match t {
-            "+" => stack.push(a + b),
-            "-" => stack.push(a - b),
-            "*" => stack.push(a * b),
-            "/" => stack.push(a / b),
-            _ => panic!("invalid operator: {}", t),
-        }
-    }
+    src.split_whitespace()
+                .filter(|token| token != &"")
+                .map(str::trim)
+                .for_each(|token| exec_eval(token, &mut stack));
 
     // 結果を返却
     if stack.len() == 0 {
@@ -56,6 +35,28 @@ pub fn eval_from_str(src: &str) -> String {
     match eval(String::from(src)) {
         Ok(v) => format!("{}", v),
         Err(e) => format!("[ERROR]: {}", e),
+    }
+}
+
+fn exec_eval(token: &str, stack: &mut Vec<f64>) {
+    // 数値の場合は、スタックにPUSH
+    match token.parse::<f64>() {
+        Ok(v) => {
+            stack.push(v);
+            return;
+        },
+        Err(_) => 0.0,
+    };
+
+    // 演算子なら直前2つをPOPして、計算結果をPUSH
+    let b = stack.pop().unwrap();
+    let a = stack.pop().unwrap();
+    match token {
+        "+" => stack.push(a + b),
+        "-" => stack.push(a - b),
+        "*" => stack.push(a * b),
+        "/" => stack.push(a / b),
+        _ => panic!("invalid operator: {}", token),
     }
 }
 
