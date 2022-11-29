@@ -1,6 +1,6 @@
 [package]
 name = "rpn_lib"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["takeweb"]
 description = "RPN(Reverse Polish Natation) library"
 license = "MIT"
