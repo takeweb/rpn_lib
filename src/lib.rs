@@ -5,32 +5,31 @@
 /// let result = rpn_lib::eval(src).unwrap();
 /// println!("{}", result) // →9
 /// ```
-/// # Example2
-/// ```
-/// let result = rpn_lib::eval_from_str("1 2 3 * +");
-/// println!("{}", result); // →7
-/// ```
 pub fn eval(src: String) -> Result<f64, String> {
     // 計算用のスタック
     let mut stack: Vec<f64> = vec![];
 
     // 式を空白で分割して繰り返し計算
     src.split_whitespace()
-                .filter(|token| token != &"")
                 .map(str::trim)
+                .filter(|token| *token != "")
                 .for_each(|token| exec_eval(token, &mut stack));
 
     // 結果を返却
-    if stack.len() == 0 {
-        return Err(format!("no result"));
-    }
-    if stack.len() > 1 {
-        return Err(format!("too many value in stack"));
-    }
-    Ok(stack.pop().unwrap_or(0.0))
+    let result = match stack.len() {
+        i if i == 0 => Err(format!("no result")),
+        i if i > 1  => Err(format!("too many value in stack")),
+        _ => Ok(stack.pop().unwrap_or(0.0)),
+    };
+    result
 }
 
-// より手軽に使える方法を提供
+/// for easy use
+/// # Example2
+/// ```
+/// let result = rpn_lib::eval_from_str("1 2 3 * +");
+/// println!("{}", result); // →7
+/// ```
 pub fn eval_from_str(src: &str) -> String {
     match eval(String::from(src)) {
         Ok(v) => format!("{}", v),
